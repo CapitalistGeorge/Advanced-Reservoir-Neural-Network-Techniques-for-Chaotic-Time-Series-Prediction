@@ -1,9 +1,9 @@
-import numpy as np
 from itertools import combinations
-from scipy.linalg import hankel
+
+import numpy as np
 import pandas as pd
+from scipy.linalg import hankel
 from scipy.spatial import cKDTree
-from numpy.fft import fft
 
 """Наименьшие квадраты для одной переменной"""
 
@@ -35,19 +35,25 @@ def HurstTraj(ser):  # RS-trajectory of Hurst
     h = np.array(h)
     t = np.array([0.0])
     t = np.concatenate([t, np.log(tau[1:] / 2)])
-    l = int(len(t) / 50)
-    he, b = MLS(t[:l], h[:l])
+    win = int(len(t) / 50)
+    he, b = MLS(t[:win], h[:win])
     mem = np.where([(h[i + 1] - h[i]) < 0.0 for i in range(len(h) - 1)])[0]
     mem = mem[0] if len(mem) else 0
+    # Returned tuple:
+    # t — ln(tau); tr — R/S trajectory (Hurst: tr = h / t);
+    # he — Hurst exponent; mem — series memory
     return (
         t,
         h,
         he,
         mem,
-    )  # t-ln(tau); h - R/S trajectory (Hurst's tr=h/t); he - Hurst's exponent; mem - series' memory
+    )
 
 
-"""Линейное укладывание в диапазон [0,1], возвращает коэффициенты для восстановления (max(X))!=0"""
+"""
+Линейное укладывание в диапазон [0,1].
+Возвращает коэффициенты для восстановления, если max(X) != 0.
+"""
 
 
 def Norm01(x):
@@ -90,8 +96,8 @@ def DimEmb(tser, eps=0.1):
         cl = []
         cn = []
         ls = np.linspace(ro[ro != 0].min(), ro.max(), num=20)
-        for l in ls:
-            c = np.heaviside(l - ro - np.diag(np.ones(n - k)), 1).sum() // 2
+        for level in ls:
+            c = np.heaviside(level - ro - np.diag(np.ones(n - k)), 1).sum() // 2
             cn.append(c / (n - k) ** 2)
             cl.append(np.log(c / (n - k) ** 2))
         dc = (cl[1] - cl[0]) / (np.log(ls[1]) - np.log(ls[0]))
@@ -102,11 +108,14 @@ def DimEmb(tser, eps=0.1):
     k -= 1
     dc = d0
     ent = sum(cn) / ent
+    # k — размерность вложения
+    # dc — корреляционная размерность
+    # ent — оценка энтропии
     return (
         k,
         dc,
         ent,
-    )  # k - размерность вложения, dc - корреляционная размерность, ent - оценка энтропии.
+    )
 
 
 def max_lyapunov(x, emb_dim=10, lag=1, fit_len=20):
