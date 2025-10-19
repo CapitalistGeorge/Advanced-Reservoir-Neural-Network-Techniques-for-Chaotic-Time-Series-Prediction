@@ -20,9 +20,3 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
-
-  # Чистит output у *.ipynb перед коммитом — чистая история ноутбуков
-  - repo: https://github.com/kynan/nbstripout
-    rev: 0.7.1
-    hooks:
-      - id: nbstripout
