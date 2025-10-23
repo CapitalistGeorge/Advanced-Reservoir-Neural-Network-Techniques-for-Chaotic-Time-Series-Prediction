@@ -143,14 +143,14 @@ In the **Bad** cluster, ESN‑F beats LGBM by ≥1 pp in **27%** of series (LGBM
 | ESN | 3.19 |
 | LGBM | 7.18 |
 
-Chaotic traits of the real‑estate series (for interpretation): Hurst **0.65**, Noise **0.99**, Corr. dimension **1.33**, max Lyapunov **0.01**, **KSE** **1.84**, $N_{Fh}=30$. fileciteturn1file3
+Chaotic traits of the real‑estate series (for interpretation): Hurst **0.65**, Noise **0.99**, Corr. dimension **1.33**, max Lyapunov **0.01**, **KSE** **1.84**, $N_{Fh}=30$.
 
 ---
 
 ## 🔧 Reproducing the paper
 
 - Run notebooks in `notebooks/` to reproduce **M4** experiments (15×15 protocol) and the **real‑estate** case study.
-- See comments inside notebooks for dataset preparation, feature extraction, and CV splits. fileciteturn1file11
+- See comments inside notebooks for dataset preparation, feature extraction, and CV splits.
 
 ---
 
