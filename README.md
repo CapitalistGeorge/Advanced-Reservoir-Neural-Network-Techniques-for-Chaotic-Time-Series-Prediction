@@ -77,12 +77,10 @@ Traditional neural networks tend to overfit such data or lose stability. To addr
 > **Note:** below we use **GitHub‑friendly LaTeX** (`$...$` / `$$...$$`) and also provide a **plain‑text fallback** in a collapsible block.
 
 **Reservoir (leaky ESN)**
-$
-\mathbf{s}_t \;=\; (1-\alpha)\,\mathbf{s}_{t-1} \;+\; \alpha\,\tanh\!\big( W_{\text{in}}\,[1;\,\mathbf{x}_t] \;+\; W\,\mathbf{s}_{t-1} \big) \tag{1}
-$
+$ \mathbf{s}_t \;=\; (1-\alpha)\,\mathbf{s}_{t-1} \;+\; \alpha\,\tanh\!\big( W_{\text{in}}\,[1;\,\mathbf{x}_t] \;+\; W\,\mathbf{s}_{t-1} \big) \tag{1} $
 
 - $\alpha \in (0,1]$ — leaking rate;
-- $W_{\text{in}}\!\in\!\mathbb{R}^{N\times(d+1)}$, $W\!\in\!\mathbb{R}^{N\times N}$ — sparse reservoir weights (scaled by spectral radius). fileciteturn1file2
+- $W_{\text{in}}\!\in\!\mathbb{R}^{N\times(d+1)}$, $W\!\in\!\mathbb{R}^{N\times N}$ — sparse reservoir weights (scaled by spectral radius).
 
 **Polynomial expansion** (degree $p$)
 $$
