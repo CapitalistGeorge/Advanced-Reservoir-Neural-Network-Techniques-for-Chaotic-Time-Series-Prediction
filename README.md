@@ -1,45 +1,42 @@
-# Reservoir Neural Networks @ ACS Lab ITMO
+# 🧠 Reservoir Neural Networks with Fourier Layer
+### Advanced Reservoir Computing Techniques for Chaotic Time Series Prediction
+**By [ACS Lab, ITMO University](https://iai.itmo.ru/)** · 2025
 
-> Experiments and code around **reservoir computing (ESN/RC)** for forecasting **chaotic** and non-stationary time series. The repo contains reusable library code, research notebooks, and utilities.
-
-![Python](https://img.shields.io/badge/python-3.10%20|%203.11%20|%203.12-blue)
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+Official repository for the paper:
+> **A. Kovantsev, R. Vysotskiy (2025). _Advanced Reservoir Neural Network Techniques for Chaotic Time Series Prediction._ SSRN 5481760.**
 
 ---
 
-## Table of Contents
-- [Overview](#overview)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Quickstart](#quickstart)
-- [Data](#data)
-- [Tests & Quality](#tests--quality)
-- [Reproducibility](#reproducibility)
-- [Contributing](#contributing)
-- [License](#license)
+## 📘 Overview
 
-## Overview
-This project explores practical improvements to reservoir neural networks for time-series prediction (feature expansions, spectral tricks, predictability measures like Hurst and Lyapunov, etc.). The code is organized so you can reuse library pieces from notebooks and write tests against them.
+We present **ESN‑F** — an **Echo State Network (ESN)** enhanced with **Fourier features** and **polynomial expansion** for forecasting **chaotic / nonlinear** time series. The approach keeps the **reservoir untrained** and learns only a **ridge readout**, while enriching inputs with **periodic (sin/cos)** and **nonlinear** bases that improve long‑horizon stability. fileciteturn1file14
 
-## Project Structure
+Use cases include **finance/economics**, **risk modeling**, and other **non‑stationary** domains. fileciteturn1file4
+
+---
+
+## 🗂 Project Layout
 
 ```
 .
-├── src/asc_itmo_lab/        # library code (reservoirs, features, utils)
-├── notebooks/               # research notebooks and examples
-├── tests/                   # pytest unit tests
-├── data/                    # datasets and artifacts (see "Data")
-├── .github/workflows/       # CI pipelines (optional)
-├── .pre-commit-config.yaml  # quality hooks (ruff, etc.)
-├── .ruff.toml               # linter/formatter config
-├── requirements.txt         # project dependencies
-└── LICENSE                  # MIT
+├── src/asc_itmo_lab/   # library code (reservoirs, features, utils)
+├── notebooks/          # research notebooks & reproductions
+├── tests/              # unit tests
+├── data/               # datasets / artifacts (see notebooks)
+├── requirements.txt    # dependencies (pinned)
+└── LICENSE             # MIT
 ```
 
+---
 
-## Installation
+## 🚀 Quick Start
+
+### Installation
 ```bash
-# 1) Create an environment
+git clone https://github.com/CapitalistGeorge/Advanced-Reservoir-Neural-Network-Techniques-for-Chaotic-Time-Series-Prediction.git
+cd Advanced-Reservoir-Neural-Network-Techniques-for-Chaotic-Time-Series-Prediction
+
+# (optional) create a clean environment
 python -m venv .venv
 # macOS/Linux:
 source .venv/bin/activate
@@ -47,39 +44,195 @@ source .venv/bin/activate
 # .venv\Scripts\Activate.ps1
 
 python -m pip install -U pip
-
-# 2) Install dependencies
 pip install -r requirements.txt
-
-# 3) (optional) Quality hooks
-pip install pre-commit
-pre-commit install
 ```
-## Notebooks
-Exploratory and reproduction notebooks live under ```notebooks/```. Open them from the project root so imports and data paths resolve properly.
 
-## Tests & Quality
+### Run examples (notebooks-first)
+```bash
+jupyter lab  # or: jupyter notebook
+# open notebooks/ and run the demos / reproductions
 ```
-pytest -q            # unit tests (./tests)
-ruff check .         # lint
-ruff format .        # format
-pre-commit run -a    # run all hooks locally
-```
-## Citing
-If this repository helps your research, please cite the related work:
 
-Anton Kovantsev, Roman Vysotskiy. Advanced Reservoir Neural Network Techniques for Chaotic Time Series Prediction, SSRN, 2025. DOI: 10.2139/ssrn.5481760.
+### Code quality (optional)
+```bash
+pytest -q        # unit tests (./tests)
+ruff check .     # lint
+ruff format .    # format
+```
+
+---
+
+## 🧩 Motivation
+
+Chaotic time series are inherently unpredictable due to their **sensitivity to initial conditions**, yet they exhibit **hidden regularities** that can be uncovered in the **frequency domain**. fileciteturn1file18turn1file19
+
+Traditional neural networks tend to overfit such data or lose stability. To address this, we combine the **fast, low-training-cost dynamics of reservoir computing** with **Fourier-based feature expansion**. fileciteturn1file4
+
+> “The key idea is to move part of the temporal representation from the time domain to the frequency domain — allowing the model to selectively amplify meaningful periodicities while suppressing chaotic noise.”
+
+---
+
+## 🔬 Methodology (ESN‑F)
+
+> **Note:** below we use **GitHub‑friendly LaTeX** (`$...$` / `$$...$$`) and also provide a **plain‑text fallback** in a collapsible block.
+
+**Reservoir (leaky ESN)**
+$$
+\mathbf{s}_t \;=\; (1-\alpha)\,\mathbf{s}_{t-1} \;+\; \alpha\,\tanh\!\big( W_{\text{in}}\,[1;\,\mathbf{x}_t] \;+\; W\,\mathbf{s}_{t-1} \big) \tag{1}
+$$
+
+- $\alpha \in (0,1]$ — leaking rate;
+- $W_{\text{in}}\!\in\!\mathbb{R}^{N\times(d+1)}$, $W\!\in\!\mathbb{R}^{N\times N}$ — sparse reservoir weights (scaled by spectral radius). fileciteturn1file2
+
+**Polynomial expansion** (degree $p$)
+$$
+\boldsymbol{\phi}(\mathbf{x}_t) \;=\; \mathrm{Poly}_p(\mathbf{x}_t) \tag{2}
+$$
+
+**Fourier (harmonic) features** for $k=1,\dots,K$
+$$
+\boldsymbol{\psi}(\mathbf{x}_t) \;=\; \big[\,A_k,\ \sin(2\pi k\,\mathbf{x}_t),\ \cos(2\pi k\,\mathbf{x}_t)\,\big]_{k=1}^{K} \tag{3}
+$$
+
+**Feature concatenation**
+$$
+\mathbf{H}_t \;=\; \big[\,\mathbf{s}_t;\ \boldsymbol{\phi}(\mathbf{x}_t);\ \boldsymbol{\psi}(\mathbf{x}_t)\,\big] \tag{4}
+$$
+
+**Standardization & ridge readout**
+$$
+\hat{\mathbf{y}}_t \;=\; W_{\text{out}}\,\tilde{\mathbf{H}}_t,\qquad
+W_{\text{out}}=\arg\min_W \|Y-WH\|_2^2+\lambda\|W\|_2^2 \tag{5}
+$$
+
+All equations (1)–(5) are exactly as in the paper’s **Design** section. Fourier & polynomial terms are **feature engineering** feeding the readout; the reservoir core remains **untrained**. fileciteturn1file14
+
+<details><summary><b>Plain‑text fallback (for editors without LaTeX support)</b></summary>
 
 ```
+(1) s_t = (1 - alpha) * s_{t-1} + alpha * tanh( W_in * [1; x_t] + W * s_{t-1} )
+(2) phi(x_t) = Poly_p(x_t)
+(3) psi(x_t) = concat_{k=1..K} [ A_k, sin(2*pi*k*x_t), cos(2*pi*k*x_t) ]
+(4) H_t = [ s_t ; phi(x_t) ; psi(x_t) ]
+(5) y_hat_t = W_out * H_t_tilde ,  where W_out = argmin_W ||Y - W H||^2 + lambda ||W||^2
+```
+</details>
+
+---
+
+## 🧪 Datasets & Protocol (as in the paper)
+
+- **M4 subset**: 1,500 real‑life series (length ≈1000), forecast horizon **15**, **15** rolling runs, metric **MAPE**. fileciteturn1file11
+- **Clustering by predictability** (features: **Hurst**, **Noise** factor, **Correlation dimension**, **max Lyapunov**, **KSE**, number of prevailing Fourier harmonics $N_{Fh}$) → **Good** (1176) vs **Bad** (324). fileciteturn1file11
+- **Real estate (Moscow)**: weekly series **2016‑12‑28 → 2024‑12‑25** (418 pts), smoothed by 13‑point moving average; expanding‑window CV (initial train **104**, horizon **52**). fileciteturn1file0
+
+---
+
+## 📊 Experimental Results (from the paper)
+
+### M4 (clustered by predictability, MAPE % ↓)
+| Cluster | ESN‑F | ESN | LGBM | Prophet | SSA |
+|---|---:|---:|---:|---:|---:|
+| Good | **3.44** | 3.56 | 3.72 | 6.86 | 18.03 |
+| Bad  | 5.26 | **5.19** | 5.39 | 8.57 | 20.05 |
+
+In the **Bad** cluster, ESN‑F beats LGBM by ≥1 pp in **27%** of series (LGBM better in **15%**; remainder negligible). fileciteturn1file1
+
+### Moscow Real Estate (weekly, MAPE % ↓)
+| Model | MAPE |
+|---|---:|
+| **ESN‑F** | **2.56** |
+| ESN | 3.19 |
+| LGBM | 7.18 |
+
+Chaotic traits of the real‑estate series (for interpretation): Hurst **0.65**, Noise **0.99**, Corr. dimension **1.33**, max Lyapunov **0.01**, **KSE** **1.84**, $N_{Fh}=30$. fileciteturn1file3
+
+---
+
+## 🔧 Reproducing the paper
+
+- Run notebooks in `notebooks/` to reproduce **M4** experiments (15×15 protocol) and the **real‑estate** case study.
+- See comments inside notebooks for dataset preparation, feature extraction, and CV splits. fileciteturn1file11
+
+---
+
+## 📐 Predictability features (formulas)
+
+**Hurst exponent**
+$$
+H \;=\; \frac{\ln\!\big(R(\tau)/S(\tau)\big)}{\ln(\alpha \tau)} \tag{6}
+$$
+with
+$$
+R(\tau) = \max_{1\le t\le \tau} \sum_{i=1}^{t} (x_i - \bar{x}_\tau) \;-\; \min_{1\le t\le \tau} \sum_{i=1}^{t} (x_i - \bar{x}_\tau), \quad
+S(\tau)=\sqrt{\frac{1}{\tau}\sum_{t=1}^{\tau}(x_t-\bar{x}_\tau)^2}. \tag{7,8}
+$$
+fileciteturn1file11turn1file12
+
+**KSE (Kolmogorov–Sinai entropy)** — definition via entropy rate upper bound:
+$$
+h_\mu(T,\xi) = - \lim_{n\to\infty}\frac{1}{n} \sum_{i_1,\dots,i_n} \mu(T^{-1}C_{i_1}\cap\cdots\cap T^{-n}C_{i_n}) \ln \mu(\cdots), \quad
+h^{KS}_\mu(T)=\sup_{\xi} h_\mu(T,\xi). \tag{9,10}
+$$
+fileciteturn1file12
+
+**Correlation dimension**
+$$
+d_k = \lim_{r\to 0}\lim_{m\to\infty}\frac{\ln C(r)}{\ln r},\quad
+C(r)=\frac{1}{m(m-1)}\sum_{i=1}^{m}\sum_{j=i+1}^{m}\theta(r-\rho(i,j)). \tag{11,12,13}
+$$
+fileciteturn1file8
+
+**Prevailing Fourier harmonics**
+$$
+N_{Fh}=\sum_{i=1}^{k}\theta(A_i-\bar{A}). \tag{14}
+$$
+fileciteturn1file10
+
+**Noise factor**
+$$
+F_N = 1 - \sqrt{ \frac{N}{N-1} \cdot \frac{\sum_{i=1}^{N-1}(x'_{i}-\bar{x}')^2}{\sum_{i=1}^{N}(x_{i}-\bar{x})^2} } \tag{15}
+$$
+fileciteturn1file6
+
+---
+
+## 🧰 Dependencies
+
+Install from `requirements.txt`:
+```bash
+pip install -r requirements.txt
+```
+Typical stack: Python, NumPy/SciPy, scikit‑learn, Jupyter, plotting libs, and QA tooling (ruff, pytest).
+
+---
+
+## 🧑‍🔬 Authors and Credits
+
+Developed by **[ACS Lab, ITMO University](https://iai.itmo.ru/)**
+Maintainer: [@CapitalistGeorge](https://github.com/CapitalistGeorge)
+Contributors: A. Kovantsev, R. Vysotskiy, and ACS Lab research team.
+
+---
+
+## 📚 Citation
+
+```bibtex
 @article{KovantsevVysotskiy2025Reservoir,
   title   = {Advanced Reservoir Neural Network Techniques for Chaotic Time Series Prediction},
   author  = {Kovantsev, Anton and Vysotskiy, Roman},
   year    = {2025},
   journal = {SSRN Electronic Journal},
-  doi     = {10.2139/ssrn.5481760},
-  url     = {https://papers.ssrn.com/sol3/papers.cfm?abstract_id=5481760}
+  doi     = {10.2139/ssrn.5481760}
 }
 ```
 
-## License
-Released under the MIT License. See ```./LICENSE``` for details.
+---
+
+## 🪪 License
+
+Released under the **MIT License** — free to use, modify, and distribute with attribution.
+
+---
+
+> _“Spectral insight meets chaotic dynamics — bridging periodicity and unpredictability.”_
