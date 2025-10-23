@@ -74,8 +74,6 @@ Traditional neural networks tend to overfit such data or lose stability. To addr
 
 ## 🔬 Methodology (ESN‑F)
 
-> **Note:** below we use **GitHub‑friendly LaTeX** (`$...$` / `$$...$$`) and also provide a **plain‑text fallback** in a collapsible block.
-
 **Reservoir (leaky ESN)**
 $ \mathbf{s}_t \;=\; (1-\alpha)\,\mathbf{s}_{t-1} \;+\; \alpha\,\tanh\!\big( W_{\text{in}}\,[1;\,\mathbf{x}_t] \;+\; W\,\mathbf{s}_{t-1} \big) \tag{1} $
 
@@ -83,9 +81,9 @@ $ \mathbf{s}_t \;=\; (1-\alpha)\,\mathbf{s}_{t-1} \;+\; \alpha\,\tanh\!\big( W_{
 - $W_{\text{in}}\!\in\!\mathbb{R}^{N\times(d+1)}$, $W\!\in\!\mathbb{R}^{N\times N}$ — sparse reservoir weights (scaled by spectral radius).
 
 **Polynomial expansion** (degree $p$)
-$$
+\[
 \boldsymbol{\phi}(\mathbf{x}_t) \;=\; \mathrm{Poly}_p(\mathbf{x}_t) \tag{2}
-$$
+\[
 
 **Fourier (harmonic) features** for $k=1,\dots,K$
 $$
@@ -104,17 +102,6 @@ W_{\text{out}}=\arg\min_W \|Y-WH\|_2^2+\lambda\|W\|_2^2 \tag{5}
 $$
 
 All equations (1)–(5) are exactly as in the paper’s **Design** section. Fourier & polynomial terms are **feature engineering** feeding the readout; the reservoir core remains **untrained**.
-
-<details><summary><b>Plain‑text fallback (for editors without LaTeX support)</b></summary>
-
-```
-(1) s_t = (1 - alpha) * s_{t-1} + alpha * tanh( W_in * [1; x_t] + W * s_{t-1} )
-(2) phi(x_t) = Poly_p(x_t)
-(3) psi(x_t) = concat_{k=1..K} [ A_k, sin(2*pi*k*x_t), cos(2*pi*k*x_t) ]
-(4) H_t = [ s_t ; phi(x_t) ; psi(x_t) ]
-(5) y_hat_t = W_out * H_t_tilde ,  where W_out = argmin_W ||Y - W H||^2 + lambda ||W||^2
-```
-</details>
 
 ---
 
