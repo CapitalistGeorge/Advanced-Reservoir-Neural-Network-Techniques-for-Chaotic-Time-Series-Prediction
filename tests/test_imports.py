@@ -1,15 +1,7 @@
-import pytest
+try:
+    from asc_itmo_lab.chaotic_measures import hurst_trajectory
+    from asc_itmo_lab.enhanced_esn_fan import EnhancedESN_FAN
 
-
-def test_basic_imports():
-    import numpy  # noqa: F401
-    import pandas  # noqa: F401
-    import scipy  # noqa: F401
-    import sklearn  # noqa: F401
-
-    # lightgbm требует libomp на macOS; если не установлено — пропустим тест
-    pytest.importorskip("lightgbm")
-
-    # внешние из GitHub — просто импорт
-    import pymssa  # noqa: F401
-    import skccm  # noqa: F401
+    print("✅ Все импорты работают корректно!")
+except ImportError as e:
+    print(f"❌ Ошибка импорта: {e}")

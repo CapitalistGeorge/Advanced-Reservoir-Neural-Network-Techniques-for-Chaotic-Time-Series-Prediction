@@ -1,0 +1,89 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "asc-itmo-lab"
+version = "0.1.0"
+description = "Advanced Reservoir Neural Networks (ESN-F) with Fourier features for chaotic time series forecasting"
+readme = {file = "README.md", content-type = "text/markdown"}
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    {name = "ACS Lab, ITMO University"},
+    {name = "Anton Kovantsev", email = "your-email@itmo.ru"},
+    {name = "Roman Vysotskiy", email = "your-email@itmo.ru"}
+]
+maintainers = [
+    {name = "ACS Lab, ITMO University", email = "acs-lab@itmo.ru"}
+]
+keywords = [
+    "reservoir computing",
+    "echo state network",
+    "time series",
+    "forecasting",
+    "fourier analysis",
+    "chaotic systems",
+    "nonlinear dynamics",
+    "machine learning"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: Financial and Insurance Industry",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Office/Business :: Financial :: Investment",
+]
+
+dependencies = [
+    "numpy>=1.19.0",
+    "scipy>=1.6.0",
+    "scikit-learn>=1.0.0",
+    "pandas>=1.2.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "ruff>=0.5.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/CapitalistGeorge/Advanced-Reservoir-Neural-Network-Techniques-for-Chaotic-Time-Series-Prediction"
+Repository = "https://github.com/CapitalistGeorge/Advanced-Reservoir-Neural-Network-Techniques-for-Chaotic-Time-Series-Prediction"
+Documentation = "https://github.com/CapitalistGeorge/Advanced-Reservoir-Neural-Network-Techniques-for-Chaotic-Time-Series-Prediction#readme"
+"Bug Reports" = "https://github.com/CapitalistGeorge/Advanced-Reservoir-Neural-Network-Techniques-for-Chaotic-Time-Series-Prediction/issues"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+"*" = ["*.txt", "*.md", "*.rst"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py38"
+select = [
+    "E",  # pycodestyle errors
+    "W",  # pycodestyle warnings
+    "F",  # pyflakes
+    "I",  # isort
+    "B",  # flake8-bugbear
+    "C4", # flake8-comprehensions
+]
+ignore = [
+    "E501",  # line too long
+    "B905",  # zip without strict parameter
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]
